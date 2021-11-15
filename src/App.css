@@ -6,13 +6,8 @@
   height: 100vh;
 }
 .tictacbtn {
-  width: 60px;
+  width: 50px;
   height: 50px;
-  outline: none;
-  border: none;
-  font-size: 2rem;
-  background-color: rgb(233, 229, 229);
-  border: solid 0.1px #000;
 }
 
 .ticRow{
@@ -21,11 +16,4 @@
   justify-content: center;
   gap: 1rem;
   margin: 0.5rem;
-}
-
-.reset {
-  padding: 15px 35px;
-  font-size: 1.5rem;
-  outline: none;
-  border: solid 2px #000;
 }
