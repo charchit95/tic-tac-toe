@@ -21,40 +21,38 @@ function App() {
 
   useEffect(() => {
     if (boardState.steps !== 0 && boardState.steps % 2 === 1) {
-      let row = Math.ceil(Math.random() * (3));
-      let col = Math.ceil(Math.random() * (3));
-
-      while(boardState.steps < 9 && boardState.board[row-1][col-1] !== 0){
-         row = Math.ceil(Math.random() * (3));
-         col = Math.ceil(Math.random() * (3));
+      let row = Math.ceil(Math.random() * (grid));
+      let col = Math.ceil(Math.random() * (grid));
+      while(boardState.steps < (grid*grid) && boardState.board[row-1][col-1] !== 0){
+         row = Math.ceil(Math.random() * (grid));
+         col = Math.ceil(Math.random() * (grid));
       }
-
       console.log("***************")
       console.log(row, col)
       console.log("***************")
       let copyState = { ...boardState };
       if (copyState.board[row - 1][col - 1] === 0) {
-        copyState.board[row - 1][col - 1] = copyState.player;
-        let result = gameLogin(copyState.board, copyState.player, row - 1, col - 1);
-        if (result) {
-          copyState.gameOver = true;
-          copyState.winner = copyState.player;
-          clearInterval(intervalRef.current);
-          setStartGame(false);
-        } else {
-          copyState.winner = 0;
-        }
-        copyState.steps += 1;      
-        if (copyState.steps === (grid*grid)) {
-          if (!result) {
-            copyState.winner = "Draw";
+        setTimeout(() => {
+          copyState.board[row - 1][col - 1] = copyState.player;
+          let result = gameLogin(copyState.board, copyState.player, row - 1, col - 1);
+          if (result) {
+            copyState.gameOver = true;
+            copyState.winner = copyState.player;
             clearInterval(intervalRef.current);
             setStartGame(false);
           }
-          copyState.gameOver = true;
-        }      
-        copyState.player = -copyState.player;
-        setBoardState(copyState);
+          copyState.steps += 1;      
+          if (copyState.steps === (grid*grid)) {
+            if (!result) {
+              copyState.winner = "Draw";
+              clearInterval(intervalRef.current);
+              setStartGame(false);
+            }
+            copyState.gameOver = true;
+          }      
+          copyState.player = -copyState.player;
+          setBoardState(copyState);
+        }, 1000)
       }     
     }
   // eslint-disable-next-line
@@ -233,6 +231,9 @@ function App() {
         <h1>
           Current Move: Player {boardState.player === 1 ? "O" : "X"}
         </h1>}
+        <h1>
+          You are: Player {userPref === 1 ? "O" : "X"}
+        </h1>
       {boardState.gameOver &&
         <div>
           <h1>
