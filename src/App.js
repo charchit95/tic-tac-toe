@@ -6,6 +6,7 @@ function App() {
   const [time, setTime] = useState(60);
   const [userPref, setUserPref] = useState(1);
   const [startGame, setStartGame] = useState(false);
+  const [isCompEditing, setIsCompEditing] = useState(false);
   const intervalRef = useRef(null);
 
   let initial = {
@@ -20,12 +21,13 @@ function App() {
 
 
   useEffect(() => {
-    if (boardState.steps !== 0 && boardState.steps % 2 === 1) {
+    if (boardState.steps !== 0 && boardState.steps !== grid*grid && boardState.steps % 2 === 1) {
+      setIsCompEditing(true);
       let row = Math.ceil(Math.random() * (grid));
       let col = Math.ceil(Math.random() * (grid));
       while(boardState.steps < (grid*grid) && boardState.board[row-1][col-1] !== 0){
-         row = Math.ceil(Math.random() * (grid));
-         col = Math.ceil(Math.random() * (grid));
+        row = Math.ceil(Math.random() * (grid));
+        col = Math.ceil(Math.random() * (grid));
       }
       console.log("***************")
       console.log(row, col)
@@ -52,6 +54,7 @@ function App() {
           }      
           copyState.player = -copyState.player;
           setBoardState(copyState);
+          setIsCompEditing(false);
         }, 1000)
       }     
     }
@@ -210,23 +213,25 @@ function App() {
         <button onClick={() => handleGridChange(4)}>4</button>
         <button onClick={() => handleGridChange(5)}>5</button>
       </div>
-      {boardState &&
-        boardState.board.map((row, i) =>
-          <div className="ticRow" key={i}>
-            {row.map((item, cindex) => {
-              return (
-                <button
-                  key={cindex}
-                  className="tictacbtn"
-                  disabled={boardState.gameOver}
-                  onClick={() => handleClick(cindex, i)}
-                >
-                  {item === 0 ? undefined : item === 1 ? "O" : "X"}
-                </button>
-              );
-            })}
-          </div>
-        )}
+      <div className="tictac_container">
+        {boardState &&
+          boardState.board.map((row, i) =>
+            <div className="ticRow" key={i}>
+              {row.map((item, cindex) => {
+                return (
+                  <button
+                    key={cindex}
+                    className="tictacbtn"
+                    disabled={isCompEditing || boardState.gameOver}
+                    onClick={() => handleClick(cindex, i)}
+                  >
+                    {item === 0 ? undefined : item === 1 ? "O" : "X"}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+      </div>
       {!boardState.gameOver &&
         <h1>
           Current Move: Player {boardState.player === 1 ? "O" : "X"}
