@@ -18,6 +18,40 @@ function App() {
 
   let [boardState, setBoardState] = useState(initial);
 
+
+  useEffect(() => {
+    if (boardState.steps !== 0 && boardState.steps % 2 === 0) {
+      const row = Math.ceil(Math.random() * (3));
+      const col = Math.ceil(Math.random() * (3));
+      let copyState = { ...boardState };
+      if (copyState.board[row][col] === 0) {
+        copyState.board[row][col] = copyState.player;
+        let result = gameLogin(copyState.board, copyState.player, row, col);
+        if (result) {
+          copyState.gameOver = true;
+          copyState.winner = copyState.player;
+          clearInterval(intervalRef.current);
+          setStartGame(false);
+        } else {
+          copyState.winner = 0;
+        }
+        copyState.steps += 1;      
+        if (copyState.steps === (grid*grid)) {
+          if (!result) {
+            copyState.winner = "Draw";
+            clearInterval(intervalRef.current);
+            setStartGame(false);
+          }
+          copyState.gameOver = true;
+        }      
+        copyState.player = -copyState.player;
+        setBoardState(copyState);
+      }     
+    }
+  // eslint-disable-next-line
+  }, [boardState]);
+
+
   useEffect(() => {
     if (startGame) {
       intervalRef.current = setInterval(() => {
