@@ -2,12 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import "./App.css";
 
 function App() {
+  const intervalRef = useRef(null);
   const [grid, setGrid] = useState(3);
   const [time, setTime] = useState(60);
   const [userPref, setUserPref] = useState(1);
   const [startGame, setStartGame] = useState(false);
   const [isCompEditing, setIsCompEditing] = useState(false);
-  const intervalRef = useRef(null);
+  const [isFirst, setIsFirst] = useState(false);
 
   let initial = {
     player: 1,
@@ -18,7 +19,6 @@ function App() {
   };
 
   let [boardState, setBoardState] = useState(initial);
-
 
   useEffect(() => {
     if (boardState.steps !== 0 && boardState.steps !== grid*grid && boardState.steps % 2 === 1) {
@@ -197,15 +197,19 @@ function App() {
   return (
     <div className="App">
 
-
+    {!isFirst && (
       <div>
         User Choise
-        <button onClick={function() { setBoardState({...boardState, player: 1}); setUserPref(1);}}>O</button>
-        <button onClick={function() { setBoardState({...boardState, player: -1}); setUserPref(-1); }}>X</button>
+        <button onClick={function() { setBoardState({...boardState, player: 1}); setUserPref(1); setIsFirst(true)}}>O</button>
+        <button onClick={function() { setBoardState({...boardState, player: -1}); setUserPref(-1); setIsFirst(true)}}>X</button>
       </div>
+    )}
+      
 
 
-      <div className="timer">
+      {isFirst && (
+        <>
+        <div className="timer">
         {time}s
       </div>
       <div style={{ display: "flex", gap: "1rem" }}>
@@ -248,6 +252,9 @@ function App() {
           </h1>
         </div>}
       <button onClick={function() { setBoardState(initial); setTime(60); clearInterval(intervalRef.current); }}>Reset</button>
+      </>
+      )}
+      
     </div>
   );
 }
